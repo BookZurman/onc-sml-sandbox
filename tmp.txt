@@ -1,0 +1,21 @@
+2023-02-09 10:50:45.864 [main] WARN  o.eclipse.jetty.webapp.WebAppContext [WebAppContext.java:541] Failed startup of context o.s.b.w.e.j.JettyEmbeddedWebAppContext@268f0cd1{application,/,[org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory$LoaderHidingResource@18fd1464, jar:file:/Users/seanmuir/.m2/repository/org/webjars/swagger-ui/4.1.3/swagger-ui-4.1.3.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/npm/bootstrap/4.5.2/bootstrap-4.5.2.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/npm/popper.js/1.16.1/popper.js-1.16.1.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/bootstrap/5.1.3/bootstrap-5.1.3.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/popper.js/2.9.3/popper.js-2.9.3.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/Eonasdan-bootstrap-datetimepicker-4.17.47.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/font-awesome/5.8.2/font-awesome-5.8.2.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/bower/awesome-bootstrap-checkbox/1.0.2/awesome-bootstrap-checkbox-1.0.2.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/jstimezonedetect/1.0.6/jstimezonedetect-1.0.6.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/select2/4.0.13/select2-4.0.13.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/bower/jquery/3.5.1/jquery-3.5.1.jar!/META-INF/resources, jar:file:/Users/seanmuir/.m2/repository/org/webjars/bower/moment/2.27.0/moment-2.27.0.jar!/META-INF/resources],UNAVAILABLE}
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'hapiServletRegistration' defined in ca.uhn.fhir.jpa.starter.Application: Unsatisfied dependency expressed through method 'hapiServletRegistration' parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'restfulServer' defined in class path resource [ca/uhn/fhir/jpa/starter/common/StarterJpaConfig.class]: Unsatisfied dependency expressed through method 'restfulServer' parameter 3; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mdmProviderLoader': Unsatisfied dependency expressed through field 'myMdmControllerHelper'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException:
+ Error creating bean with name 'mdmProviderHelper' defined in class path resource [ca/uhn/fhir/jpa/mdm/config/MdmConsumerConfig.class]: 
+Unsatisfied dependency expressed through method 'mdmProviderHelper' parameter 2;
+ nested exception is org.springframework.beans.factory.BeanCreationException:
+ Error creating bean with name 'mdmSettings' defined in class path resource [ca/uhn/fhir/jpa/starter/mdm/MdmConfig.class]: 
+Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: 
+Failed to instantiate [ca.uhn.fhir.mdm.api.IMdmSettings]: 
+Factory method 'mdmSettings' threw exception; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: 
+Error creating bean with name 'myAccountDaoR4': 
+Unsatisfied dependency expressed through field 'myTerminologySvc'; 
+nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException:
+ Error creating bean with name 'terminologyService': 
+Unsatisfied dependency expressed through field 'myCachingValidationSupport'; 
+nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: 
+Error creating bean with name 'validationSupportChain' defined in class path resource [ca/uhn/fhir/jpa/starter/common/StarterJpaConfig.class]: 
+Unsatisfied dependency expressed through method 'validationSupportChain' parameter 0; 
+nested exception is org.springframework.beans.factory.BeanCreationException: 
+Error creating bean with name 'myJpaValidationSupportChain': 
+Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: 
+Could not initialize class ca.uhn.hapi.converters.canonical.VersionCanonicalizer
