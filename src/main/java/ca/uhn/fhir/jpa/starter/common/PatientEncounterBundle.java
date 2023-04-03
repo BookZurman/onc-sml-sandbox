@@ -109,6 +109,10 @@ public class PatientEncounterBundle {
 		}
 				 
 			IBundleProvider patients =	 prp.search(theServletRequest, theServletResponse, theRequestDetails, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+			
+//			IBaseBundle asdfadsf = patients;
+//			patients.ge		
+			
 //			Bundle b2 = new Bundle();
 		
 			BundleBuilder root = new BundleBuilder(this.fhirServer.getFhirContext());

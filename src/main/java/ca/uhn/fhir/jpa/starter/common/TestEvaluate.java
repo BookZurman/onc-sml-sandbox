@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.hl7.fhir.convertors.advisors.interfaces.BaseAdvisor;
 import org.hl7.fhir.instance.model.api.IBase;
@@ -46,6 +47,8 @@ import org.opencds.cqf.cql.evaluator.builder.EndpointInfo;
 import org.opencds.cqf.cql.evaluator.dagger.CqlEvaluatorComponent;
 import org.opencds.cqf.cql.evaluator.dagger.DaggerCqlEvaluatorComponent;
 import org.opencds.cqf.cql.evaluator.fhir.npm.NpmProcessor;
+
+import com.google.common.base.Stopwatch;
 
 //import ca.uhn.fhir.context.FhirVersionEnum;
 //import picocli.CommandLine.ArgGroup;
@@ -191,7 +194,7 @@ public class TestEvaluate {
 
 	        LibraryParameter lp = new LibraryParameter();
 	        lp.libraryUrl =testResourcePath + "/r4";
-	        lp.libraryName = "TestFHIR";
+	        lp.libraryName = "LungCancerScreening";
 	        ContextParameter context = new ContextParameter();;
 	        context.contextName = "Patient";
 	        context.contextValue="example";		
@@ -261,14 +264,30 @@ public class TestEvaluate {
 	            if (library.context != null) {
 	                contextParameter = Pair.of(library.context.contextName, library.context.contextValue);
 	            }
+	            
+	            Stopwatch stopwatch = Stopwatch.createStarted();
+//	            doSomething();
+	          
 
+	            for (int ii = 0; ii < 10000; ii++) {
+	            	
+	            	
+	            	  System.out.println("Round " + ii);
+	            
 	            EvaluationResult result = evaluator.evaluate(identifier, contextParameter);
 
-	            for (Map.Entry<String, ExpressionResult> libraryEntry : result.expressionResults.entrySet()) {
-	                System.out.println(libraryEntry.getKey() + "=" + tempConvert(libraryEntry.getValue().value()));
+//	            for (Map.Entry<String, ExpressionResult> libraryEntry : result.expressionResults.entrySet()) {
+//	                System.out.println(libraryEntry.getKey() + "=" + tempConvert(libraryEntry.getValue().value()));
+//	            }
 	            }
+	            
+	            stopwatch.stop(); // optional
 
-	            System.out.println();
+	            long millis = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+
+	            System.out.println("that took: " + stopwatch);
+
+	          
 	        }
 
 //	        return 0;

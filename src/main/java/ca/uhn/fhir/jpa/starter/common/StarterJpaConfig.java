@@ -271,6 +271,8 @@ public class StarterJpaConfig {
 
 		fhirServer.registerProvider(new PatientEncounterBundle(fhirServer));
 		
+		fhirServer.registerProvider(new ApplyCQL(fhirServer));
+		
 		List<String> supportedResourceTypes = appProperties.getSupported_resource_types();
 
 		if (!supportedResourceTypes.isEmpty()) {
@@ -366,10 +368,10 @@ public class StarterJpaConfig {
 
 		corsInterceptor.ifPresent(fhirServer::registerInterceptor);
 
-		if (daoConfig.getSupportedSubscriptionTypes().size() > 0) {
-			// Subscription debug logging
-			fhirServer.registerInterceptor(new SubscriptionDebugLogInterceptor());
-		}
+//		if (daoConfig.getSupportedSubscriptionTypes().size() > 0) {
+//			// Subscription debug logging
+//			fhirServer.registerInterceptor(new SubscriptionDebugLogInterceptor());
+//		}
 
 		if (appProperties.getAllow_cascading_deletes()) {
 			CascadingDeleteInterceptor cascadingDeleteInterceptor = new CascadingDeleteInterceptor(fhirSystemDao.getContext(), daoRegistry, interceptorBroadcaster, theThreadSafeResourceDeleterSvc);
