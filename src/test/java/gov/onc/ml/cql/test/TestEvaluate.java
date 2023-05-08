@@ -1,4 +1,4 @@
-package ca.uhn.fhir.jpa.starter.common;
+package gov.onc.ml.cql.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +15,6 @@ import org.hl7.fhir.r4b.utils.GraphQLSchemaGenerator;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.jpa.graphql.GraphQLProvider;
 import ca.uhn.fhir.jpa.graphql.GraphQLProviderWithIntrospection;
-import ca.uhn.fhir.jpa.starter.common.TestEvaluate.LibraryParameter.ContextParameter;
-import ca.uhn.fhir.jpa.starter.common.TestEvaluate.LibraryParameter.ModelParameter;
 
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -71,7 +69,7 @@ public class TestEvaluate {
 	        public String namespaceUri;
 	    }
 	
-	  public static class LibraryParameter {
+	  static class LibraryParameter {
 	        
 	        public String libraryUrl;
 
@@ -193,17 +191,17 @@ public class TestEvaluate {
 	        }
 
 	        LibraryParameter lp = new LibraryParameter();
-	        lp.libraryUrl =testResourcePath + "/r4";
-	        lp.libraryName = "LungCancerScreening";
-	        ContextParameter context = new ContextParameter();;
+	        lp.libraryUrl =testResourcePath + "/testCQL";
+	        lp.libraryName = "BreastCancerScreening";
+	        gov.onc.ml.cql.test.TestEvaluate.LibraryParameter.ContextParameter context = new gov.onc.ml.cql.test.TestEvaluate.LibraryParameter.ContextParameter();;
 	        context.contextName = "Patient";
 	        context.contextValue="example";		
 			lp.context = context;
-			ModelParameter model = new ModelParameter();
+			gov.onc.ml.cql.test.TestEvaluate.LibraryParameter.ModelParameter model = new gov.onc.ml.cql.test.TestEvaluate.LibraryParameter.ModelParameter();
 			model.modelName = "FHIR";
 			model.modelUrl = testResourcePath + "/r4";
 			lp.model = model ;
-			lp.terminologyUrl = testResourcePath + "/r4/vocabulary/ValueSet";
+			lp.terminologyUrl = testResourcePath + "/testCQL/vocabulary/ValueSet";
 			
 	        
 	        libraries.add(lp);
@@ -269,16 +267,21 @@ public class TestEvaluate {
 //	            doSomething();
 	          
 
-	            for (int ii = 0; ii < 10000; ii++) {
+	            for (int ii = 0; ii < 1; ii++) {
 	            	
 	            	
 	            	  System.out.println("Round " + ii);
 	            
 	            EvaluationResult result = evaluator.evaluate(identifier, contextParameter);
 
-//	            for (Map.Entry<String, ExpressionResult> libraryEntry : result.expressionResults.entrySet()) {
-//	                System.out.println(libraryEntry.getKey() + "=" + tempConvert(libraryEntry.getValue().value()));
-//	            }
+	            for (Map.Entry<String, ExpressionResult> libraryEntry : result.expressionResults.entrySet()) {
+	            	
+	            	System.err.println("aaaaa");
+	            	 System.out.println(libraryEntry.getKey() + "=" + libraryEntry.getValue().value());
+	            	 System.err.println("bbbb");
+	                System.out.println(libraryEntry.getKey() + "=" + tempConvert(libraryEntry.getValue().value()));
+	                System.err.println("cccc");
+	            }
 	            }
 	            
 	            stopwatch.stop(); // optional

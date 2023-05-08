@@ -256,7 +256,7 @@ public class ApplyCQL {
 
 		LibraryParameter lp = new LibraryParameter();
 		lp.libraryUrl = testResourcePath + "/r4";
-		lp.libraryName = "TestFHIR";
+		lp.libraryName = "ColonCancerScreening"; //"TestFHIR";
 		ContextParameter context = new ContextParameter();
 		context.contextName = "Patient";
 		context.contextValue = "example";
