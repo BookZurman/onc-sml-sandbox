@@ -18,6 +18,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Subscription;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,16 @@ class TestEvaluateCQL {
 
 	@LocalServerPort
 	private int port;
+	
+	   @BeforeAll
+       public static void setEnvironment() {
+               System.setProperty("cql.libraries", "cql");
+               System.setProperty("cql.vocabulary", "cql/vocabulary");
+               System.setProperty("cql.plan", "cql/plan");
+               
+               
+       }
+
 
 	@Test
 	@Order(0)

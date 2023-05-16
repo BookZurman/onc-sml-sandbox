@@ -1,16 +1,9 @@
 package ca.uhn.fhir.jpa.starter;
 
-import ca.uhn.fhir.batch2.jobs.config.Batch2JobsConfig;
-import ca.uhn.fhir.jpa.batch2.JpaBatch2Config;
-import ca.uhn.fhir.jpa.starter.annotations.OnEitherVersion;
-import ca.uhn.fhir.jpa.starter.common.FhirTesterConfig;
-import ca.uhn.fhir.jpa.starter.mdm.MdmConfig;
-import ca.uhn.fhir.jpa.subscription.channel.config.SubscriptionChannelConfig;
-import ca.uhn.fhir.jpa.subscription.match.config.SubscriptionProcessorConfig;
-import ca.uhn.fhir.jpa.subscription.match.config.WebsocketDispatcherConfig;
-import ca.uhn.fhir.jpa.subscription.submit.config.SubscriptionSubmitterConfig;
-import ca.uhn.fhir.rest.server.RestfulServer;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,64 +18,82 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-@ServletComponentScan(basePackageClasses = {RestfulServer.class})
-@SpringBootApplication(exclude = {ElasticsearchRestClientAutoConfiguration.class})
-@Import({
-	SubscriptionSubmitterConfig.class,
-	SubscriptionProcessorConfig.class,
-	SubscriptionChannelConfig.class,
-	WebsocketDispatcherConfig.class,
-	MdmConfig.class,
-	JpaBatch2Config.class,
-	Batch2JobsConfig.class
-})
+import ca.uhn.fhir.batch2.jobs.config.Batch2JobsConfig;
+import ca.uhn.fhir.jpa.batch2.JpaBatch2Config;
+import ca.uhn.fhir.jpa.starter.annotations.OnEitherVersion;
+import ca.uhn.fhir.jpa.starter.common.FhirTesterConfig;
+import ca.uhn.fhir.jpa.starter.mdm.MdmConfig;
+import ca.uhn.fhir.jpa.starter.util.ExecuteCQLUtil;
+import ca.uhn.fhir.jpa.subscription.channel.config.SubscriptionChannelConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.SubscriptionProcessorConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.WebsocketDispatcherConfig;
+import ca.uhn.fhir.jpa.subscription.submit.config.SubscriptionSubmitterConfig;
+import ca.uhn.fhir.rest.server.RestfulServer;
+
+@ServletComponentScan(basePackageClasses = { RestfulServer.class })
+@SpringBootApplication(exclude = { ElasticsearchRestClientAutoConfiguration.class })
+@Import({ SubscriptionSubmitterConfig.class, SubscriptionProcessorConfig.class, SubscriptionChannelConfig.class,
+		WebsocketDispatcherConfig.class, MdmConfig.class, JpaBatch2Config.class, Batch2JobsConfig.class })
 public class Application extends SpringBootServletInitializer {
 
-  public static void main(String[] args) {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
-    SpringApplication.run(Application.class, args);
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(Application.class);
+	}
 
-    //Server is now accessible at eg. http://localhost:8080/fhir/metadata
-    //UI is now accessible at http://localhost:8080/
-  }
+	@Autowired
+	AutowireCapableBeanFactory beanFactory;
 
-  @Override
-  protected SpringApplicationBuilder configure(
-    SpringApplicationBuilder builder) {
-    return builder.sources(Application.class);
-  }
+	@Autowired
+	@Value("#{systemProperties['cql.libraries'] ?: '/cql'}")
+	private String cqlLibraries;
 
-  @Autowired
-  AutowireCapableBeanFactory beanFactory;
+	@Autowired
+	@Value("#{systemProperties['cql.vocabulary'] ?: '/cql/vocabulary'}")
+	private String cqlVocabulary;
 
-  @Bean
-  @Conditional(OnEitherVersion.class)
-  public ServletRegistrationBean hapiServletRegistration(RestfulServer restfulServer) {
-    ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
-    beanFactory.autowireBean(restfulServer);
-    servletRegistrationBean.setServlet(restfulServer);
-    servletRegistrationBean.addUrlMappings("/fhir/*");
-    servletRegistrationBean.setLoadOnStartup(1);
+	@Autowired
+	@Value("#{systemProperties['cql.plan'] ?: '/cql/plan'}")
+	private String cqlPlan;
 
-    return servletRegistrationBean;
-  }
+	@PostConstruct
+	public void initialize() {
+		ExecuteCQLUtil.setCqlLibraries(cqlLibraries);
+		ExecuteCQLUtil.setCqlVocabulary(cqlVocabulary);
+		ExecuteCQLUtil.setCqlPlan(cqlPlan);
+	}
 
-  @Bean
-  public ServletRegistrationBean overlayRegistrationBean() {
+	@Bean
+	@Conditional(OnEitherVersion.class)
+	public ServletRegistrationBean hapiServletRegistration(RestfulServer restfulServer) {
+		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
+		beanFactory.autowireBean(restfulServer);
+		servletRegistrationBean.setServlet(restfulServer);
+		servletRegistrationBean.addUrlMappings("/fhir/*");
+		servletRegistrationBean.setLoadOnStartup(1);
 
-    AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
-    annotationConfigWebApplicationContext.register(FhirTesterConfig.class);
+		return servletRegistrationBean;
+	}
 
-    DispatcherServlet dispatcherServlet = new DispatcherServlet(
-      annotationConfigWebApplicationContext);
-    dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
-    dispatcherServlet.setContextConfigLocation(FhirTesterConfig.class.getName());
+	@Bean
+	public ServletRegistrationBean overlayRegistrationBean() {
 
-    ServletRegistrationBean registrationBean = new ServletRegistrationBean();
-    registrationBean.setServlet(dispatcherServlet);
-    registrationBean.addUrlMappings("/*");
-    registrationBean.setLoadOnStartup(1);
-    return registrationBean;
+		AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
+		annotationConfigWebApplicationContext.register(FhirTesterConfig.class);
 
-  }
+		DispatcherServlet dispatcherServlet = new DispatcherServlet(annotationConfigWebApplicationContext);
+		dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
+		dispatcherServlet.setContextConfigLocation(FhirTesterConfig.class.getName());
+
+		ServletRegistrationBean registrationBean = new ServletRegistrationBean();
+		registrationBean.setServlet(dispatcherServlet);
+		registrationBean.addUrlMappings("/*");
+		registrationBean.setLoadOnStartup(1);
+		return registrationBean;
+
+	}
 }
