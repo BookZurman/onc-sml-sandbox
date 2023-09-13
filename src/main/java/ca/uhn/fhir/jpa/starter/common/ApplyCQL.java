@@ -109,13 +109,6 @@ public class ApplyCQL {
 			
 			PatientEverythingParameters everythingParams = new PatientEverythingParameters();
 			everythingParams.setCount(theCount);
-//			everythingParams.setOffset(theOffset);
-//			everythingParams.setLastUpdated(theLastUpdated);
-//			everythingParams.setSort(theSortSpec);
-//			everythingParams.setContent(toStringAndList(theContent));
-//			everythingParams.setNarrative(toStringAndList(theNarrative));
-//			everythingParams.setFilter(toStringAndList(theFilter));
-//			everythingParams.setTypes(toStringAndList(theTypes));
 
 			TokenOrListParam retVal = new TokenOrListParam();
 			retVal.addOr(new TokenParam(theTargetPatient.getIdElement().getIdPart()));
@@ -131,15 +124,13 @@ public class ApplyCQL {
 			LocalRetrieveProvider lpr = new LocalRetrieveProvider(FhirContext.forR4(), root.getBundle());
 
 			for (JsonObject plans : ExecuteCQLUtil.getPlans()) {
-//				System.err.println("JsonObject plans : ExecuteCQLUtil.getPlans() loop");
+
 				
 				List<JsonValue> foo = plans.getArray("plan").collect(Collectors.toList());
 				
-//				System.out.println(foo.size());
+
 				for (JsonValue plan : plans.getArray("plan").collect(Collectors.toList())) {
-					
-//					System.err.println("plans.getArray(\"plan\").collect(Collectors.toList()loop");
-					
+ 					
 					Function<JsonValue, DataPoint> mymapper = new Function<JsonValue, DataPoint>() {
 						@Override
 						public DataPoint apply(JsonValue t) {
@@ -165,7 +156,7 @@ public class ApplyCQL {
 
 					for (DataPoint dp : datapoints) {
 						
-//						System.err.println("for (DataPoint dp : datapoints) loop");
+ 
 						
 						IFhirResourceDao<Observation> odao = orp.getDao();
 						Observation observation = new Observation();
@@ -194,16 +185,11 @@ public class ApplyCQL {
 						IParser jp = this.fhirServer.getFhirContext().newJsonParser();
 						jp.setPrettyPrint(true);
 						
-						System.err.println("datapoints.size() " + datapoints.size());
-						System.err.println("Adding Observation " + ctr++);
-						
+ 						
 						observationsBundle.addCollectionEntry(result.getResource());
 						
 						
-//						System.err.println(jp.encodeResourceToString(result.getResource()));
-						
-//						System.out.println(dp.key + " : " + results.get(dp.key));
-					}
+ 					}
 				}
 			}
 		}

@@ -101,6 +101,8 @@ public class ExecuteCQLUtil {
 	public static HashMap<String,String> executeCQL(String library,String fhirVersion,RetrieveProvider retrieveProvider,Set<String> datapoints) {
 
 	 
+		 org.opencds.cqf.cql.evaluator.fhir.DirectoryBundler_Factory fff;
+		 
 		HashMap<String,String> results = new HashMap<String,String>();
 		
 		FhirVersionEnum fhirVersionEnum = FhirVersionEnum.valueOf(fhirVersion);
@@ -109,6 +111,8 @@ public class ExecuteCQLUtil {
 
 		CqlEvaluatorComponent.Builder builder = DaggerCqlEvaluatorComponent.builder()
 				.fhirContext(fhirVersionEnum.newContext());
+		
+//		DirectoryBundler_Factory foo = null;
 
 		CqlEvaluatorComponent cqlEvaluatorComponent = builder.build();
 

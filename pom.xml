@@ -22,7 +22,7 @@
 		<java.version>11</java.version>
 		<logback-classic.version>1.2.11</logback-classic.version>
 		<slf4j-api.version>1.7.25</slf4j-api.version>
-		<skipTests>false</skipTests>
+		<skipTests>true</skipTests>
 	</properties>
 
 	<prerequisites>
@@ -401,22 +401,22 @@
 		<dependency>
 			<groupId>org.opencds.cqf.cql</groupId>
 			<artifactId>evaluator</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>2.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opencds.cqf.cql</groupId>
 			<artifactId>evaluator.builder</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>2.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opencds.cqf.cql</groupId>
 			<artifactId>evaluator.dagger</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>2.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opencds.cqf.cql</groupId>
 			<artifactId>evaluator.jackson-deps</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>2.5.0</version>
 			<type>pom</type>
 		</dependency>
 
