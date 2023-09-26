@@ -33,6 +33,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.jpa.starter.Application;
+import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.CacheControlDirective;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
@@ -48,7 +49,7 @@ class TestEncounterBundle {
 
 	@BeforeAll
 	public static void setEnvironment() {
-		System.setProperty("synthea.bundles", "src/test/resources/synthea/bundles");
+		System.setProperty("synthea.bundles", "/Users/seanmuir/git/test/MNISTDocker/temp/fhir");
 	}
 
 	private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(TestEncounterBundle.class);
@@ -75,6 +76,7 @@ class TestEncounterBundle {
 			@Override
 			public void accept(Path bundlePath) {
 				try {
+					System.err.println(bundlePath);
 					Bundle bundle= (Bundle) ourCtx.newJsonParser().parseResource(Files.readString(bundlePath));;
 					Bundle resp = ourClient.transaction().withBundle(bundle).execute();					
 					List<Patient> patients = BundleUtil.toListOfResourcesOfType(ourCtx, bundle, Patient.class);
@@ -113,7 +115,7 @@ class TestEncounterBundle {
 	}
 
 	@Test
-	void testBundleOfBundles() throws IOException {
+	void testBundleOfBundles() throws Exception {
 		List<Identifier> patientIdentifiers = postSyntheaBundles();
 		String methodName = "testBundleOfBundles";
 		ourLog.info("Entering " + methodName + "()...");
@@ -124,13 +126,26 @@ class TestEncounterBundle {
 		
 	}
 
-	private void bundleOfBundlesOperation(Identifier i) {	
+	private void bundleOfBundlesOperation(Identifier i) throws Exception {	
 		Parameters inParams = new Parameters();
-		inParams.addParameter().setName("patient").setValue(new StringType(i.getId()));
+		inParams.addParameter().setName("patient").setValue(new StringType("0"));
 		Parameters outParams = ourClient.operation().onServer().named("$bundleofbundles").withParameters(inParams)
 				.useHttpGet() 
 				.execute();
 		Resource responseBundle = outParams.getParameter().get(0).getResource();
+		
+		Path testPath = Paths.get("target/test-output/bundleofbundles/" + i.getValue());
+		if (!Files.exists(testPath)) {
+			Files.createDirectories(testPath);
+		}
+
+		Path path = Paths.get("target/test-output/bundleofbundles/" + i.getValue() + "/Patient" + i.getValue() + ".xml");
+		
+		
+		 
+
+		Files.write(path, ourCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(responseBundle).getBytes() );
+		
 	}
 
 	@BeforeEach
